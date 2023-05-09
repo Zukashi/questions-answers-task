@@ -12,7 +12,7 @@ describe('question repository', () => {
       id: '1',
       summary: 'Who are you?',
       author: 'Tim Doods',
-      answers: [{ id: 'ce7bddfb-0544-4b14-92d8-188b03c41ee4', author: 'Brian McKenzie', summary: 'The Earth is flat.' }, { id: 'd498c0a3-5be2-4354-a3bc-78673aca0f31', author: 'Dr Strange', summary: 'It is egg-shaped.' }]
+      answers: [{ id: 'ce7bddfb-0544-4b14-92d8-188b03c41ee4', author: 'Brian McKenzie', summary: 'The Earth is flat.' }, { id: '2', author: 'Dr Strange', summary: 'It is egg-shaped.' }]
     },
     {
       id: '2',
@@ -88,6 +88,22 @@ describe('question repository', () => {
       await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify(testQuestions))
       const answers = (await questionRepo.getAnswers('1'))
       expect(answers).toHaveLength(2)
+    })
+  })
+
+  describe('GET question/answer', () => {
+    test('should throw error with status code of 404', async () => {
+      await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify(testQuestions))
+      const response = await request(app).get('/questions/1/answers/21301223523143453425234DSASDXCZ')
+      expect(response.statusCode).toBe(404)
+    })
+
+    test('should return an answer for specified id of question', async () => {
+      await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify(testQuestions))
+      const answer = (await questionRepo.getAnswer('1', '2'))
+      console.log(answer)
+      expect(answer).toMatchObject({ id: '2', author: 'Dr Strange', summary: 'It is egg-shaped.' })
+      expect(answer).not.toMatchObject({ id: '1', author: 3, summary: 'It is egg-shaped.' })
     })
   })
 })

@@ -14,10 +14,8 @@ export const makeQuestionRepository = (fileName: string) => {
 
   const getQuestionById = async (questionId: string): Promise<Question | undefined> => {
     const questions = await getQuestions()
-    console.log(questions)
     const question = questions.find((question) => question.id === questionId)
-    console.log(333)
-    if (question === undefined) throw new UserError('Question not found', 404)
+    if (question == null) throw new UserError('Question not found', 404)
     return question
   }
   const addQuestion = async (question: Omit<Question, 'id'>): Promise<Omit<Question, 'id'>> => {
@@ -46,15 +44,26 @@ export const makeQuestionRepository = (fileName: string) => {
       throw new UserError('Not found answers of specified question id', 404)
     }
   }
-  // const getAnswer = async (questionId: string, answerId: string): Promise<Answer> => {}
+  const getAnswer = async (questionId: string, answerId: string): Promise<Answer> => {
+    const question = await getQuestionById(questionId)
+    if (question == null) {
+      throw new UserError('Not found question', 404)
+    }
+    const answer = question.answers?.find((answer) => answer.id === answerId)
+    if (answer != null) {
+      return answer
+    } else {
+      throw new UserError('Not found answer', 404)
+    }
+  }
   // const addAnswer = async (questionId: string, answer: Answer): Promise<void> => {}
 
   return {
     getQuestions,
     getQuestionById,
     addQuestion,
-    getAnswers
-    // getAnswer,
+    getAnswers,
+    getAnswer
     // addAnswer
   }
 }

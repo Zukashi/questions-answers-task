@@ -37,6 +37,12 @@ app.get('/questions/:questionId/answers', async (req: ReqWithQuestionRepository,
   res.json(answers)
 })
 
-app.post('/questions/:questionId/answers', (req, res) => {})
+app.post('/questions/:questionId/answers', (req: ReqWithQuestionRepository, res) => {
 
-app.get('/questions/:questionId/answers/:answerId', (req, res) => {})
+})
+
+app.get('/questions/:questionId/answers/:answerId', async (req: ReqWithQuestionRepository, res) => {
+  const { questionId, answerId } = req.params
+  res.json(await req.repositories.questionRepo.getAnswer(questionId, answerId))
+})
+app.listen(3000, () => { console.log('server starting on port 3000!') })
