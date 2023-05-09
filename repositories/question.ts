@@ -1,6 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import { type Answer, type Question } from '../types/QuestionRepository'
 import { UserError } from '../utils/errors'
+import { questionDTOSchema } from '../schema/question'
+import { writeFile } from 'fs/promises'
+import { faker } from '@faker-js/faker'
 
 export const makeQuestionRepository = (fileName: string) => {
   const getQuestions = async (): Promise<Question[]> => {
@@ -11,21 +14,35 @@ export const makeQuestionRepository = (fileName: string) => {
 
   const getQuestionById = async (questionId: string): Promise<Question | undefined> => {
     const questions = await getQuestions()
-    console.log(questions)
     const question = questions.find((question) => question.id === questionId)
     if (question === undefined) throw new UserError('Question not found', 404)
-
     return question
   }
-  // const addQuestion = async (question: Question): Promise<void> => {}
+  const addQuestion = async (question: Omit<Question, 'id'>): Promise<Omit<Question, 'id'>> => {
+    try {
+      questionDTOSchema.parse(question)
+      const newQuestion = {
+        id: faker.datatype.uuid(),
+        ...question
+      }
+      const allQuestions = await getQuestions()
+      allQuestions.push(newQuestion)
+      await writeFile(fileName, JSON.stringify(allQuestions))
+      // extract id of new question from newQuestion
+      const { id: placeholder, ...newQuestionWithoutId } = newQuestion
+      return newQuestionWithoutId
+    } catch (e) {
+      throw new UserError('Invalid dto data provided', 400)
+    }
+  }
   // const getAnswers = async (questionId: string): Promise<Answer[]> => {}
   // const getAnswer = async (questionId: string, answerId: string): Promise<Answer> => {}
   // const addAnswer = async (questionId: string, answer: Answer): Promise<void> => {}
 
   return {
     getQuestions,
-    getQuestionById
-    // addQuestion,
+    getQuestionById,
+    addQuestion
     // getAnswers,
     // getAnswer,
     // addAnswer

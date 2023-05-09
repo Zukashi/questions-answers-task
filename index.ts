@@ -23,15 +23,14 @@ app.get('/questions/:questionId', async (req: ReqWithQuestionRepository, res) =>
 })
 
 app.get('/questions', async (req: ReqWithQuestionRepository, res) => {
-  try {
-    const questions = await req.repositories.questionRepo.getQuestions()
-    res.json(questions)
-  } catch (e) {
-    res.sendStatus(404)
-  }
+  const questions = await req.repositories.questionRepo.getQuestions()
+  res.json(questions)
 })
 
-app.post('/questions', (req, res) => {})
+app.post('/questions', async (req: ReqWithQuestionRepository, res) => {
+  const question = await req.repositories.questionRepo.addQuestion(req.body)
+  res.status(201).json(question)
+})
 
 app.get('/questions/:questionId/answers', (req, res) => {})
 
