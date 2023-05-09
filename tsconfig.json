@@ -6,15 +6,13 @@
   },
   "compilerOptions": {
     "target": "es2016",
-    "module": "commonjs",
-    "rootDir": "./src",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "checkJs": true,
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true
-  }
+  },
 }

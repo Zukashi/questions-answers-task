@@ -12,7 +12,8 @@ describe('question repository', () => {
   beforeAll(async () => {
     await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify([]))
 
-    questionRepo = makeQuestionRepository(TEST_QUESTIONS_FILE_PATH)
+    questionRepo = makeQuestionRepository(TEST_QUESTIONS_FILE_PATH);
+    console.log(questionRepo)
   })
 
   afterAll(async () => {

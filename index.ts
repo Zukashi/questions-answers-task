@@ -1,6 +1,7 @@
-import express from 'express'
-const { urlencoded, json } = require('body-parser')
-import {addQuestionRepoToRequest} from './middleware/repositories'
+import express, { json, Request, urlencoded } from 'express'
+
+import { addQuestionRepoToRequest } from './middleware/repositories'
+import { type Question, type ReqWithQuestionRepository } from './types/QuestionRepository'
 
 const STORAGE_FILE_PATH = 'questions.json'
 const PORT = 3000
@@ -15,7 +16,7 @@ app.get('/', (_, res) => {
   res.json({ message: 'Welcome to responder!' })
 })
 
-app.get('/questions', async (req:any, res) => {
+app.get('/questions', async (req:ReqWithQuestionRepository, res) => {
   const questions = await req.repositories.questionRepo.getQuestions()
   res.json(questions)
 })
