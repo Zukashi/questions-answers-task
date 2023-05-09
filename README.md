@@ -30,3 +30,27 @@ Please make sure you write unit tests - part of the exercise is to explore your 
 ## How to send the solution back
 
 Upload your solution to either GitHub or Gitlab and send us the link.
+
+### How to run
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/Zukashi/questions-answers-task.git
+   ```
+2. Change directory
+   ```sh
+   cd questions-answers-task
+   ```
+3. Install NPM packages
+   ```sh
+   npm install
+   ```
+4. Run the script
+   ```sh
+   npm run dev
+   ```
+   
+## Test 
+   ```sh
+   git npm run test
+   ```
