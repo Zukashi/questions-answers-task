@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request } from 'express'
 
 interface QuestionRepository {
   getQuestions: () => Promise<Question[]>
   getQuestionById: (questionId: string) => Promise<Question | undefined>
   addQuestion: (question: Omit<Question, 'id'>) => Promise<Omit<Question, 'id'>>
-  // getAnswers: (questionId: string) => Promise<Answer[]>
+  getAnswers: (questionId: string) => Promise<Answer[]>
   // getAnswer: (questionId: string, answerId: string) => Promise<Answer>
   // addAnswer: (questionId: string, answer: Answer) => Promise<void>
 }
@@ -15,7 +15,8 @@ interface Question {
   summary: string
   answers: Answer[]
 }
- type Answer = Omit<Question, 'answers' >
+
+type Answer = Omit<Question, 'answers'>
 
 interface ReqWithQuestionRepository extends Request {
   repositories: {

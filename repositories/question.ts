@@ -14,7 +14,9 @@ export const makeQuestionRepository = (fileName: string) => {
 
   const getQuestionById = async (questionId: string): Promise<Question | undefined> => {
     const questions = await getQuestions()
+    console.log(questions)
     const question = questions.find((question) => question.id === questionId)
+    console.log(333)
     if (question === undefined) throw new UserError('Question not found', 404)
     return question
   }
@@ -35,15 +37,23 @@ export const makeQuestionRepository = (fileName: string) => {
       throw new UserError('Invalid dto data provided', 400)
     }
   }
-  // const getAnswers = async (questionId: string): Promise<Answer[]> => {}
+  const getAnswers = async (questionId: string): Promise<Answer[]> => {
+    const answers = (await getQuestionById(questionId))?.answers
+    console.log(answers)
+    if (answers != null) {
+      return answers
+    } else {
+      throw new UserError('Not found answers of specified question id', 404)
+    }
+  }
   // const getAnswer = async (questionId: string, answerId: string): Promise<Answer> => {}
   // const addAnswer = async (questionId: string, answer: Answer): Promise<void> => {}
 
   return {
     getQuestions,
     getQuestionById,
-    addQuestion
-    // getAnswers,
+    addQuestion,
+    getAnswers
     // getAnswer,
     // addAnswer
   }

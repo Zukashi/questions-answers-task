@@ -32,12 +32,11 @@ app.post('/questions', async (req: ReqWithQuestionRepository, res) => {
   res.status(201).json(question)
 })
 
-app.get('/questions/:questionId/answers', (req, res) => {})
+app.get('/questions/:questionId/answers', async (req: ReqWithQuestionRepository, res) => {
+  const answers = await req.repositories.questionRepo.getAnswers(req.params.questionId)
+  res.json(answers)
+})
 
 app.post('/questions/:questionId/answers', (req, res) => {})
 
 app.get('/questions/:questionId/answers/:answerId', (req, res) => {})
-
-app.listen(PORT, () => {
-  console.log(`Responder app listening on port ${PORT}`)
-})
