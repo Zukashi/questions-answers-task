@@ -20,10 +20,10 @@ describe('question repository', () => {
       answers: []
     }
   ]
-  const questionWithId1 = testQuestions[0]
+  const questionWithIdOf1 = testQuestions[0]
   beforeAll(async () => {
     await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify([]))
-    questionRepo = await makeQuestionRepository(TEST_QUESTIONS_FILE_PATH)
+    questionRepo = makeQuestionRepository(TEST_QUESTIONS_FILE_PATH)
   })
 
   afterAll(async () => {
@@ -41,11 +41,11 @@ describe('question repository', () => {
     expect(await questionRepo.getQuestions()).toHaveLength(2)
   })
 
-  test('should return undefined', async () => {
-    expect(await questionRepo.getQuestionById('999')).toBeUndefined()
+  test('should throw error', async () => {
+    await expect(async () => await questionRepo.getQuestionById('999')).rejects.toThrow('Question not found')
   })
 
   test('should return a question with an id of 1', async () => {
-    expect(await questionRepo.getQuestionById('1')).toMatchObject(questionWithId1)
+    expect(await questionRepo.getQuestionById('1')).toMatchObject(questionWithIdOf1)
   })
 })
