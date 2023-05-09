@@ -31,7 +31,7 @@ Please make sure you write unit tests - part of the exercise is to explore your 
 
 Upload your solution to either GitHub or Gitlab and send us the link.
 
-### How to run
+## How to run
 
 1. Clone the repo
    ```sh
