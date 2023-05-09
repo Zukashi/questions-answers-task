@@ -1,10 +1,13 @@
-const { writeFile, rm } = require('fs/promises')
-const { faker } = require('@faker-js/faker')
-const { makeQuestionRepository } = require('./question')
+import { makeQuestionRepository } from './question'
+import { rm, writeFile } from 'fs/promises'
+import { faker } from '@faker-js/faker'
+
+
+
 
 describe('question repository', () => {
   const TEST_QUESTIONS_FILE_PATH = 'test-questions.json'
-  let questionRepo
+  let questionRepo : any
 
   beforeAll(async () => {
     await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify([]))

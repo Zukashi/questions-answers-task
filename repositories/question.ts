@@ -1,4 +1,4 @@
-const { readFile } = require('fs/promises')
+import { readFile } from 'node:fs/promises';
 
 export const makeQuestionRepository = (fileName:string) => {
   const getQuestions = async () => {
