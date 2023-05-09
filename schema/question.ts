@@ -9,4 +9,9 @@ export const questionDTOSchema = z.object({
     summary: z.string(),
     author: z.string()
   }))
-})
+}).strict()
+
+export const answerDTOSchema = z.object({
+  summary: z.string(),
+  author: z.string()
+}).strict()

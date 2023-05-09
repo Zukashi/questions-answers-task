@@ -1,9 +1,10 @@
 import { readFile } from 'node:fs/promises'
 import { type Answer, type Question } from '../types/QuestionRepository'
 import { UserError } from '../utils/errors'
-import { questionDTOSchema } from '../schema/question'
+import { answerDTOSchema, questionDTOSchema } from '../schema/question'
 import { writeFile } from 'fs/promises'
 import { faker } from '@faker-js/faker'
+import { ZodError } from 'zod'
 
 export const makeQuestionRepository = (fileName: string) => {
   const getQuestions = async (): Promise<Question[]> => {
@@ -21,13 +22,16 @@ export const makeQuestionRepository = (fileName: string) => {
   const addQuestion = async (question: Omit<Question, 'id'>): Promise<Omit<Question, 'id'>> => {
     try {
       questionDTOSchema.parse(question)
+
       const newQuestion = {
         id: faker.datatype.uuid(),
         ...question
       }
       const allQuestions = await getQuestions()
       allQuestions.push(newQuestion)
+
       await writeFile(fileName, JSON.stringify(allQuestions))
+
       // extract id of new question from newQuestion
       const { id: placeholder, ...newQuestionWithoutId } = newQuestion
       return newQuestionWithoutId
@@ -37,7 +41,6 @@ export const makeQuestionRepository = (fileName: string) => {
   }
   const getAnswers = async (questionId: string): Promise<Answer[]> => {
     const answers = (await getQuestionById(questionId))?.answers
-    console.log(answers)
     if (answers != null) {
       return answers
     } else {
@@ -56,14 +59,38 @@ export const makeQuestionRepository = (fileName: string) => {
       throw new UserError('Not found answer', 404)
     }
   }
-  // const addAnswer = async (questionId: string, answer: Answer): Promise<void> => {}
+  const addAnswer = async (questionId: string, answer: Omit<Answer, 'id'>): Promise<Omit<Answer, 'id'>> => {
+    try {
+      await answerDTOSchema.parseAsync(answer)
+      console.log(fileName)
+      const questions = await getQuestions()
+      const question = await getQuestionById(questionId)
+      console.log('123421423')
+      if (!Array.isArray(question?.answers) || (question == null)) throw new UserError('Not found answers of specified question', 404)
+      const newAnswer = {
+        ...answer,
+        id: faker.datatype.uuid()
+      }
+      const filteredQuestions = questions.filter((question) => questionId !== question.id)
+
+      question.answers.push(newAnswer)
+      filteredQuestions.push(question)
+      await writeFile(fileName, JSON.stringify(filteredQuestions))
+
+      const { id: placeholder, ...newAnswerWithoutId } = newAnswer
+      return newAnswerWithoutId
+    } catch (e) {
+      if (!(e instanceof ZodError)) throw new UserError('incorrect question id provided', 404)
+      throw new UserError('answerDTO doesnt match', 400)
+    }
+  }
 
   return {
     getQuestions,
     getQuestionById,
     addQuestion,
     getAnswers,
-    getAnswer
-    // addAnswer
+    getAnswer,
+    addAnswer
   }
 }

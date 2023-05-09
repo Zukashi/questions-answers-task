@@ -27,11 +27,9 @@ describe('question repository', () => {
     await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify([]))
     questionRepo = makeQuestionRepository(TEST_QUESTIONS_FILE_PATH)
   })
-
   afterAll(async () => {
     await rm(TEST_QUESTIONS_FILE_PATH)
   })
-
   describe('GET questions', function () {
     test('should return a list of 0 questions', async () => {
       expect(await questionRepo.getQuestions()).toHaveLength(0)
@@ -70,22 +68,21 @@ describe('question repository', () => {
         summary: 'test summary',
         answers: []
       }
-      const response = await request(app).post('/questions').send(testQuestion)
-      expect(response.statusCode).toBe(201)
-      expect(response.body).toBeDefined()
-      expect(response.body).toMatchObject(testQuestion)
+      const resQuestion = await questionRepo.addQuestion(testQuestion)
+
+      expect(resQuestion).toBeDefined()
+      expect(resQuestion).toMatchObject(testQuestion)
     })
   })
 
   describe('GET question/answers', () => {
     test('should throw error with status code of 404', async () => {
-      await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify(testQuestions))
+      console.log(testQuestions)
       const response = await request(app).get('/questions/999999/answers')
       expect(response.statusCode).toBe(404)
     })
 
     test('should return an array of answers to specified id of question', async () => {
-      await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify(testQuestions))
       const answers = (await questionRepo.getAnswers('1'))
       expect(answers).toHaveLength(2)
     })
@@ -93,17 +90,38 @@ describe('question repository', () => {
 
   describe('GET question/answer', () => {
     test('should throw error with status code of 404', async () => {
-      await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify(testQuestions))
       const response = await request(app).get('/questions/1/answers/21301223523143453425234DSASDXCZ')
       expect(response.statusCode).toBe(404)
     })
 
     test('should return an answer for specified id of question', async () => {
-      await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify(testQuestions))
       const answer = (await questionRepo.getAnswer('1', '2'))
       console.log(answer)
       expect(answer).toMatchObject({ id: '2', author: 'Dr Strange', summary: 'It is egg-shaped.' })
       expect(answer).not.toMatchObject({ id: '1', author: 3, summary: 'It is egg-shaped.' })
+    })
+  })
+
+  describe('POST question/answer', () => {
+    test('provide wrong question id should throw error with status code of 404', async () => {
+      await expect(async () => await questionRepo.addAnswer('4', {
+        author: '1324',
+        summary: 'test answer summary'
+      })).rejects.toThrow('incorrect question id provided')
+    })
+
+    test('should return an answer for specified id of question', async () => {
+      expect(await questionRepo.addAnswer('1', {
+        author: 'Dr Strange',
+        summary: 'It is egg-shaped.'
+      })).toMatchObject({ author: 'Dr Strange', summary: 'It is egg-shaped.' })
+
+      expect((await questionRepo.getQuestions()).find((question) => question.id === '1')?.answers.find((answer) => answer.summary === 'It is egg-shaped.')).toBeDefined()
+
+      expect(await questionRepo.addAnswer('1', {
+        author: 'author test',
+        summary: 'test answer summary'
+      })).not.toMatchObject({ author: 3, summary: 'It is egg-shaped.' })
     })
   })
 })
