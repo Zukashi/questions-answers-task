@@ -16,12 +16,14 @@ app.get('/', (_, res) => {
   res.json({ message: 'Welcome to responder!' })
 })
 
-app.get('/questions', async (req:ReqWithQuestionRepository, res) => {
+app.get('/questions', async (req: ReqWithQuestionRepository, res) => {
   const questions = await req.repositories.questionRepo.getQuestions()
   res.json(questions)
 })
 
-app.get('/questions/:questionId', (req, res) => {})
+app.get('/questions/:questionId', async (req: ReqWithQuestionRepository, res) => {
+  const question = await req.repositories.questionRepo.getOneQuestion(req.params.questionId)
+})
 
 app.post('/questions', (req, res) => {})
 

@@ -1,6 +1,6 @@
-import {  NextFunction, Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
- interface QuestionRepository {
+interface QuestionRepository {
   getQuestions: () => Promise<Question[]>
   // getQuestionById: (questionId: string) => Promise<Question>
   // addQuestion: (question: Question) => Promise<void>
@@ -9,7 +9,7 @@ import {  NextFunction, Request, Response } from 'express'
   // addAnswer: (questionId: string, answer: Answer) => Promise<void>
 }
 
- interface Question {
+interface Question {
   id: string
   author: string
   summary: string
@@ -17,8 +17,7 @@ import {  NextFunction, Request, Response } from 'express'
 }
  type Answer = Omit<Question, 'answers' >
 
-
- interface ReqWithQuestionRepository extends Request {
+interface ReqWithQuestionRepository extends Request {
   repositories: {
     questionRepo: QuestionRepository
   }
@@ -27,4 +26,4 @@ type AddQuestionRepoMiddleware = (
   fileName: string
 ) => (req: ReqWithQuestionRepository, res: Response, next: NextFunction) => void
 
-export { AddQuestionRepoMiddleware, ReqWithQuestionRepository, Answer, Question, QuestionRepository };
+export type { AddQuestionRepoMiddleware, ReqWithQuestionRepository, Answer, Question, QuestionRepository }
