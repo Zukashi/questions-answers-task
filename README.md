@@ -52,5 +52,5 @@ Upload your solution to either GitHub or Gitlab and send us the link.
    
 ## Test 
    ```sh
-   git npm run test
+   npm run test
    ```
