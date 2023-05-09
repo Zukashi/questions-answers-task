@@ -1,19 +1,29 @@
 import { makeQuestionRepository } from './question'
 import { rm, writeFile } from 'fs/promises'
 import { faker } from '@faker-js/faker'
-
-
-
+import { Question, QuestionRepository } from '../types/QuestionRepository'
 
 describe('question repository', () => {
   const TEST_QUESTIONS_FILE_PATH = 'test-questions.json'
-  let questionRepo : any
-
+  let questionRepo: QuestionRepository
+  const testQuestions: Question[] = [
+    {
+      id: '1',
+      summary: 'Who are you?',
+      author: 'Tim Doods',
+      answers: []
+    },
+    {
+      id: '2',
+      summary: 'Test question?',
+      author: 'Test User',
+      answers: []
+    }
+  ]
+  const questionWithId1 = testQuestions[0]
   beforeAll(async () => {
     await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify([]))
-
-    questionRepo = makeQuestionRepository(TEST_QUESTIONS_FILE_PATH);
-    console.log(questionRepo)
+    questionRepo = await makeQuestionRepository(TEST_QUESTIONS_FILE_PATH)
   })
 
   afterAll(async () => {
@@ -25,23 +35,17 @@ describe('question repository', () => {
   })
 
   test('should return a list of 2 questions', async () => {
-    const testQuestions = [
-      {
-        id: faker.datatype.uuid(),
-        summary: 'What is my name?',
-        author: 'Jack London',
-        answers: []
-      },
-      {
-        id: faker.datatype.uuid(),
-        summary: 'Who are you?',
-        author: 'Tim Doods',
-        answers: []
-      }
-    ]
-
+    console.log(testQuestions)
     await writeFile(TEST_QUESTIONS_FILE_PATH, JSON.stringify(testQuestions))
 
     expect(await questionRepo.getQuestions()).toHaveLength(2)
+  })
+
+  test('should return undefined', async () => {
+    expect(await questionRepo.getQuestionById('999')).toBeUndefined()
+  })
+
+  test('should return a question with an id of 1', async () => {
+    expect(await questionRepo.getQuestionById('1')).toMatchObject(questionWithId1)
   })
 })

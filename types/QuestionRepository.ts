@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 
 interface QuestionRepository {
   getQuestions: () => Promise<Question[]>
-  // getQuestionById: (questionId: string) => Promise<Question>
+  getQuestionById: (questionId: string) => Promise<Question | undefined>
   // addQuestion: (question: Question) => Promise<void>
   // getAnswers: (questionId: string) => Promise<Answer[]>
   // getAnswer: (questionId: string, answerId: string) => Promise<Answer>
@@ -22,8 +22,5 @@ interface ReqWithQuestionRepository extends Request {
     questionRepo: QuestionRepository
   }
 }
-type AddQuestionRepoMiddleware = (
-  fileName: string
-) => (req: ReqWithQuestionRepository, res: Response, next: NextFunction) => void
 
-export type { AddQuestionRepoMiddleware, ReqWithQuestionRepository, Answer, Question, QuestionRepository }
+export type { ReqWithQuestionRepository, Answer, Question, QuestionRepository }

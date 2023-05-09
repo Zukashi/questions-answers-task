@@ -22,7 +22,8 @@ app.get('/questions', async (req: ReqWithQuestionRepository, res) => {
 })
 
 app.get('/questions/:questionId', async (req: ReqWithQuestionRepository, res) => {
-  const question = await req.repositories.questionRepo.getOneQuestion(req.params.questionId)
+  // const question = await req.repositories.questionRepo.getOneQuestion(req.params.questionId)
+  // res.json(question)
 })
 
 app.post('/questions', (req, res) => {})
