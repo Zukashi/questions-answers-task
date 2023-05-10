@@ -62,10 +62,8 @@ export const makeQuestionRepository = (fileName: string) => {
   const addAnswer = async (questionId: string, answer: Omit<Answer, 'id'>): Promise<Omit<Answer, 'id'>> => {
     try {
       await answerDTOSchema.parseAsync(answer)
-      console.log(fileName)
       const questions = await getQuestions()
       const question = await getQuestionById(questionId)
-      console.log('123421423')
       if (!Array.isArray(question?.answers) || (question == null)) throw new UserError('Not found answers of specified question', 404)
       const newAnswer = {
         ...answer,

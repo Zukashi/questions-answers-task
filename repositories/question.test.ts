@@ -77,7 +77,6 @@ describe('question repository', () => {
 
   describe('GET question/answers', () => {
     test('should throw error with status code of 404', async () => {
-      console.log(testQuestions)
       const response = await request(app).get('/questions/999999/answers')
       expect(response.statusCode).toBe(404)
     })
@@ -96,7 +95,6 @@ describe('question repository', () => {
 
     test('should return an answer for specified id of question', async () => {
       const answer = (await questionRepo.getAnswer('1', '2'))
-      console.log(answer)
       expect(answer).toMatchObject({ id: '2', author: 'Dr Strange', summary: 'It is egg-shaped.' })
       expect(answer).not.toMatchObject({ id: '1', author: 3, summary: 'It is egg-shaped.' })
     })

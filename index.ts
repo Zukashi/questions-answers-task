@@ -38,7 +38,6 @@ app.get('/questions/:questionId/answers', async (req: ReqWithQuestionRepository,
 })
 
 app.post('/questions/:questionId/answers', async (req: ReqWithQuestionRepository, res) => {
-  console.log(3333)
   const answer = await req.repositories.questionRepo.addAnswer(req.params.questionId, req.body)
   res.status(201).json(answer)
 })
